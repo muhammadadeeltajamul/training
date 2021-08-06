@@ -1,49 +1,29 @@
-import numpy as np
-
 from common import get_column_data_from_alias
 from common import get_month_string_from_number
+from constants import TEXT_STYLE_NORMAL, TEXT_STYLE_BOLD
+from constants import TEXT_COLOR_RED, TEXT_COLOR_BLUE
+from constants import TEXT_COLOR_WHITE
 from load_data_from_file import load_month_data, load_year_data
 from WeatherData import WeatherData
 
 
-TEXT_STYLE_NORMAL = 0
-TEXT_STYLE_BOLD = 1
-TEXT_STYLE_LIGHT = 2
-TEXT_STYLE_ITALICIZED = 3
-TEXT_STYLE_UNDERLINED = 4
-TEXT_STYLE_BLINK = 5
+def change_text_color(text, style=0, color=37, background_color=40):
+    """This functions returns a string whose color is changed
 
-TEXT_COLOR_BLACK = 30
-TEXT_COLOR_RED = 31
-TEXT_COLOR_GREEN = 32
-TEXT_COLOR_YELLOW = 33
-TEXT_COLOR_BLUE = 34
-TEXT_COLOR_PURPLE = 35
-TEXT_COLOR_CYAN = 36
-TEXT_COLOR_WHITE = 37
+    Arguments:
+        text: str:
+            Text data whose color you want to change
+        style: int:
+            Changes style, default style "Normal"
+        color: int:
+            Changes text color, default color "White"
+        background_color: int:
+            Changes background color, default "Black"
 
-BACKGROUND_COLOR_BLACK = 40
-BACKGROUND_COLOR_RED = 41
-BACKGROUND_COLOR_GREEN = 42
-BACKGROUND_COLOR_YELLOW = 43
-BACKGROUND_COLOR_BLUE = 44
-BACKGROUND_COLOR_PURPLE = 45
-BACKGROUND_COLOR_CYAN = 46
-BACKGROUND_COLOR_WHITE = 47
-
-
-def change_text_color(style=0, color=37, background_color=40):
+    Returns:
+        Returns the string with colored text
     """
-    This functions returns a string. Add this string in the start
-    of the string whose color or style you want to change
 
-    change_text_color(style, color, background_color)
-    style: changes style, default style "Normal"
-    color: changes text color, default color "White"
-    background_color: changes background color, default "Black"
-
-    Pass constants in the function, string colors are not allowed
-    """
     try:
         style = int(style)
         color = int(color)
@@ -51,20 +31,73 @@ def change_text_color(style=0, color=37, background_color=40):
     except Exception:
         return ""
     color_string = "\033[" + str(style) + ";" + str(color) + ";"\
-                   + str(background_color) + "m"
+                   + str(background_color) + "m" + str(text)
     return color_string
 
 
-def get_boundary_element(list_, max_=True, index=0):
-    """
-    Returns the maximum or minimum element of a 2D-array.
+def arg_max(list_):
+    """Returns the index of maximum element of list
 
-    get_boundary_element(list_, max_, index)
-    list_: Input list whose boundary element is required
-    max_: Get maximum or minimum, default: True
-            Set it to "True" if maximum element is required
-            Set it to "False" if minimum element is required
-    index: Key of sublist which is used for sorting, default: 0
+    Arguments:
+        list_:
+            list whose maximum index is required
+
+    Returns:
+        index: int:
+            The index whose value is maximum
+    """
+
+    if not list_:
+        return None
+    max_index = 0
+    max_value = list_[max_index]
+    for i in range(0, len(list_)):
+        if list_[i] > max_value:
+            max_value = list_[i]
+            max_index = i
+    return max_index
+
+
+def arg_min(list_):
+    """Returns the index of minimum element of list
+
+    Arguments:
+        list_:
+            list whose minimum index is required
+
+    Returns:
+        index: int:
+            The index whose value is minimum
+    """
+
+    if not list_:
+        return None
+    min_index = 0
+    min_value = list_[min_index]
+    for i in range(0, len(list_)):
+        if list_[i] < min_value:
+            min_value = list_[i]
+            min_index = i
+    return min_index
+
+
+def get_boundary_element(list_, max_=True, index=0):
+    """Returns the maximum or minimum element of a 2D-array.
+
+    Arguments:
+        list_: list:
+            Input list whose boundary element is required
+        max_: Bool:
+            Maximum or minimum value.
+            True for maximum and False for minimum
+            default: True
+        index: int:
+            Key of 2nd dimension of array
+            default: 0
+
+    Returns:
+        value: int:
+            boundary value
     """
 
     list_ = sorted(list_, reverse=max_, key=lambda x: x[index])
@@ -75,17 +108,26 @@ def get_boundary_element(list_, max_=True, index=0):
 
 
 def get_monthly_graph_data(weather_data, path, month, year):
-    """
-    Loads the month data and returns max temperature,
+    """Loads the month data and returns max temperature,
     min temperature and len to iterate list
 
-    get_monthly_graph_data(weather_data, path, month, year)
-    weather_data: Object of class WeatherData
-    path: Folder consisting of all data files
-    month: int representing month range(1-12)
-    year: int representing year
+    Arguments:
+        weather_data: dict:
+            Object of class WeatherData
+        path: str:
+            Folder consisting of all data files
+        month: int:
+            Representing month range(1-12)
+        year: int:
+            Representing year
 
-    Returns maximum_temperature_list, minimum_temperature_list, len
+    Returns:
+        maximum_temperature_list: list:
+            List that contains maximum temperature of month
+        minimum_temperature_list: list:
+            List that contains minimum temperature of month
+        len_: int:
+            Returns the length of the list
     """
 
     load_month_data(weather_data, path, month, year)
@@ -115,13 +157,15 @@ def get_monthly_graph_data(weather_data, path, month, year):
 
 def compute_yearly_weather_report(weather_data: WeatherData,
                                   path, year: int):
-    """
-    Computes highest temperature, lowest temperature and humidity
-    compute_yearly_weather_report(weather_data, path, year)
-    weather_data: weather data of month
-                  WeatherData object
-    path: Path to folder where all the data files exist
-    year: int that represents a year
+    """Generate yearly weather report
+
+    Arguments:
+        weather_data: dict:
+            Object of class WeatherData
+        path: str:
+            Folder consisting of all data files
+        year: int:
+            Representing year
     """
 
     max_temp_list = []
@@ -139,7 +183,7 @@ def compute_yearly_weather_report(weather_data: WeatherData,
                                                      "max_temperature",
                                                      month, year)
         if max_temp_column:
-            max_index = np.argmax(max_temp_column)
+            max_index = arg_max(max_temp_column)
             max_temp_list.append([max_temp_column[max_index],
                                   max_index + 1, month])
 
@@ -148,7 +192,7 @@ def compute_yearly_weather_report(weather_data: WeatherData,
                                                      "min_temperature",
                                                      month, year)
         if min_temp_column:
-            min_index = np.argmin(min_temp_column)
+            min_index = arg_min(min_temp_column)
             min_temp_list.append([min_temp_column[min_index],
                                   min_index + 1, month])
 
@@ -157,7 +201,7 @@ def compute_yearly_weather_report(weather_data: WeatherData,
                                                          "max_humidity",
                                                          month, year)
         if max_humidity_column:
-            max_index = np.argmax(max_humidity_column)
+            max_index = arg_max(max_humidity_column)
             max_humidity_list.append([max_humidity_column[max_index],
                                       max_index + 1, month])
 
@@ -166,7 +210,7 @@ def compute_yearly_weather_report(weather_data: WeatherData,
                                                          "min_humidity",
                                                          month, year)
         if min_humidity_column:
-            min_index = np.argmin(min_humidity_column)
+            min_index = arg_min(min_humidity_column)
             min_humidity_list.append([min_humidity_column[min_index],
                                       min_index + 1, month])
 
@@ -196,16 +240,17 @@ def compute_yearly_weather_report(weather_data: WeatherData,
 def compute_monthly_weather_report(weather_data: WeatherData,
                                    path, month: int,
                                    year: int):
-    """
-    Computes average highest and average lowest temperature, and
-            average mean humidity
+    """Generates monthly weather report
 
-    minus_a(weather_data, path, month, year)
-    weather_data: weather data of month
-                  WeatherData object
-    path: Path to folder where all files exist
-    month: integer range(1-12)
-    year: int that represents a year
+    Arguments:
+        weather_data: dict:
+            Object of class WeatherData
+        path: str:
+            Folder consisting of all data files
+        month: int:
+            Representing month range(1-12)
+        year: int:
+            Representing year
     """
 
     load_month_data(weather_data, path, month, year)
@@ -240,77 +285,81 @@ def compute_monthly_weather_report(weather_data: WeatherData,
 def compute_monthly_weather_graph_same_line(weather_data: WeatherData,
                                             path, month: int,
                                             year: int):
-    """
-    Shows a graph of highest and lowest weather of a month
-    Displays the max and min in same line
+    """Generates monthly weather graph on same line
 
-    minus_c(weather_data, month, year)
-    weather_data: weather data of month
-                  WeatherData object
-    path: Path to folder where all files exist
-    month: integer range(1-12)
-    year: int that represents a year
+    Arguments:
+        weather_data: dict:
+            Object of class WeatherData
+        path: str:
+            Folder consisting of all data files
+        month: int:
+            Representing month range(1-12)
+        year: int:
+            Representing year
     """
 
     max_temp_column, min_temp_column, len_ = get_monthly_graph_data(
                                     weather_data, path, month, year)
     for i in range(0, len_):
-        red_color_string = change_text_color(TEXT_STYLE_NORMAL,
-                                             TEXT_COLOR_RED,
-                                             BACKGROUND_COLOR_BLACK)
-        blue_color_string = change_text_color(TEXT_STYLE_NORMAL,
-                                              TEXT_COLOR_BLUE,
-                                              BACKGROUND_COLOR_BLACK)
-        white_color_string = change_text_color(TEXT_STYLE_BOLD,
-                                               TEXT_COLOR_WHITE,
-                                               BACKGROUND_COLOR_BLACK)
-        print_str = white_color_string + str("%.2d) " % (i + 1))
-        print_str += blue_color_string
-        print_str += "+" * abs(int(min_temp_column[i]))
-        print_str += red_color_string
-        print_str += "+" * abs(int(max_temp_column[i]))
-        print_str += blue_color_string
-        print_str += (" " + str(min_temp_column[i]) + "C")
-        print_str += white_color_string + "-"
-        print_str += red_color_string
-        print_str += (str(max_temp_column[i]) + "C")
+        print_str = change_text_color(str("%.2d) " % (i + 1)),
+                                      style=TEXT_STYLE_BOLD,
+                                      color=TEXT_COLOR_WHITE)
+        print_str += change_text_color("+" * abs(int(min_temp_column[i])),
+                                       style=TEXT_STYLE_NORMAL,
+                                       color=TEXT_COLOR_BLUE)
+        print_str += change_text_color("+" * abs(int(max_temp_column[i])),
+                                       color=TEXT_COLOR_RED)
+        print_str += change_text_color(" " + str(min_temp_column[i]) + "C",
+                                       color=TEXT_COLOR_BLUE)
+        print_str += change_text_color("-",
+                                       style=TEXT_STYLE_BOLD,
+                                       color=TEXT_COLOR_WHITE)
+        print_str += change_text_color(str(max_temp_column[i]) + "C",
+                                       style=TEXT_STYLE_NORMAL,
+                                       color=TEXT_COLOR_RED)
         print(print_str)
     return
 
 
 def compute_monthly_weather_graph_two_lines(weather_data: WeatherData,
                                             path, month: int, year: int):
-    """
-        Shows a graph of highest and lowest weather of a month
-        Displays the max and min in separate lines
+    """Generates monthly weather graph on two lines
 
-        minus_c(weather_data, month, year)
-        weather_data: weather data of month
-                      WeatherData object
-        path: Path to folder where all files exist
-        month: integer range(1-12)
-        year: int that represents a year
+    Arguments:
+        weather_data: dict:
+            Object of class WeatherData
+        path: str:
+            Folder consisting of all data files
+        month: int:
+            Representing month range(1-12)
+        year: int:
+            Representing year
     """
 
     max_temp_column, min_temp_column, len_ = get_monthly_graph_data(
         weather_data, path, month, year)
-    red_color_string = change_text_color(TEXT_STYLE_NORMAL,
-                                         TEXT_COLOR_RED,
-                                         BACKGROUND_COLOR_BLACK)
-    blue_color_string = change_text_color(TEXT_STYLE_NORMAL,
-                                          TEXT_COLOR_BLUE,
-                                          BACKGROUND_COLOR_BLACK)
-    white_color_string = change_text_color(TEXT_STYLE_BOLD,
-                                           TEXT_COLOR_WHITE,
-                                           BACKGROUND_COLOR_BLACK)
     for i in range(0, len_):
-        print_str = white_color_string + str("%.2d" % (i + 1)) + ") "
-        print_str += red_color_string
-        print_str += str("+" * abs(int(max_temp_column[i])))
-        print_str += " " + str(int(max_temp_column[i])) + " C\n"
-        print_str += white_color_string + str("%.2d" % (i + 1)) + ") "
-        print_str += blue_color_string
-        print_str += str("+" * abs(int(min_temp_column[i])))
-        print_str += " " + str(int(min_temp_column[i])) + " C"
+        print_str = change_text_color(str("%.2d) " % (i + 1)),
+                                      style=TEXT_STYLE_BOLD,
+                                      color=TEXT_COLOR_WHITE)
+        print_str += change_text_color(str("+"
+                                           * abs(int(max_temp_column[i]))),
+                                       style=TEXT_STYLE_NORMAL,
+                                       color=TEXT_COLOR_RED)
+        print_str += change_text_color(" "
+                                       + str(int(max_temp_column[i])) + " C\n",
+                                       style=TEXT_STYLE_NORMAL,
+                                       color=TEXT_COLOR_RED)
+        print_str += change_text_color(str("%.2d) " % (i + 1)),
+                                       style=TEXT_STYLE_BOLD,
+                                       color=TEXT_COLOR_WHITE)
+        print_str += change_text_color(str("+"
+                                           * abs(int(min_temp_column[i]))),
+                                       style=TEXT_STYLE_NORMAL,
+                                       color=TEXT_COLOR_BLUE)
+        print_str += change_text_color(" "
+                                       + str(int(min_temp_column[i])) + " C",
+                                       style=TEXT_STYLE_NORMAL,
+                                       color=TEXT_COLOR_BLUE)
         print(print_str)
     return

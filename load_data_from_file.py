@@ -1,48 +1,139 @@
 import os
-import pandas as pd
 import sys
 
 from common import get_month_string_from_number
 
 
-def load_data_from_file(param_filename):
+def clean_file_and_structure_data(param_filename, separator):
+    """Cleans the file and return required structure data
+
+    Arguments:
+        param_filename: str:
+            filename that is to be cleaned
+        separator: str:
+            used to differentiate between two columns
+
+    Returns:
+        file_data_cleaned: list:
+            List that contains clean structured data
+        column_names: list:
+            List that contains all column names
     """
-    load_data_from_file(param_filename)
-    param_filename: filename that contains data
-        uses '.xlsx', '.xls', '.csv', '.tsv' and '.txt'
-            '.txt' file must have data similar to .csv
-        if invalid extension found, program quits
-    Create a dataframe from file
+
+    file_data_cleaned = []
+    column_names = []
+
+    # Load and clean the file data
+    with open(param_filename, "r") as file:
+        file_data = file.readlines()
+        if not file_data:
+            return [], []
+        for line_num in range(0, len(file_data)):
+            # Removing useless characters from line
+            line = file_data[line_num]
+            line = line.replace("\n", '')
+            line = line.replace("\t", '')
+            line = line.replace("\r", '')
+
+            # Checking if line is empty
+            empty_line_flag = True
+            for each_character in line:
+                if each_character not in ["", "\t", " ", "\n", "\r"]:
+                    empty_line_flag = False
+                    break
+            if empty_line_flag:
+                continue
+
+            line_data = line.split(separator)
+            if line_num == 0:
+                # Creating indexes in dictionary for each column
+                # It will be used in the end
+                for each in line_data:
+                    column_names.append(each)
+            else:
+                # Changing data from string to integer/float
+                # Starting loop from 1 to skip the date column
+                for list_index in range(1, len(line_data)):
+                    # Column that has text values
+                    if list_index == 21:
+                        continue
+                    if line_data[list_index] == "":
+                        line_data[list_index] = 0
+                    else:
+                        try:
+                            line_data[list_index] = float(
+                                line_data[list_index])
+                        except Exception:
+                            print("Invalid data in ", param_filename)
+                            sys.exit()
+
+            # Entering clean line data into list
+            file_data_cleaned.append(line_data)
+    return column_names, file_data_cleaned
+
+
+def load_data_from_file(param_filename):
+    """Create a dictionary from file data
+
+    Arguments:
+        param_filename: str:
+            filename that contains data
+            uses '.csv', '.tsv' and '.txt'
+                '.txt' file must have data similar to .csv
+
+    Returns:
+        month_data: dict:
+            Dictionary that contains complete data
     """
 
     filename, file_ext = os.path.splitext(param_filename)
     file_ext = str(file_ext).lower()
-    if file_ext == ".xlsx" or file_ext == "xls":
-        month_dataframe = pd.read_excel(param_filename)
-    elif file_ext == ".csv" or file_ext == ".txt":
-        month_dataframe = pd.read_csv(param_filename)
+    if file_ext == ".csv" or file_ext == ".txt":
+        separator = ","
     elif file_ext == ".tsv":
-        month_dataframe = pd.read_csv(param_filename, sep='\t')
+        separator = "\t"
     else:
         print(file_ext + " Invalid input file found")
-        sys.exit()
+        return
     if not os.path.exists(param_filename):
         print("Data file not found")
         sys.exit()
-    month_dataframe.fillna(0, inplace=True)
-    return month_dataframe
+
+    month_dictionary = {}
+    column_names, file_data_cleaned = clean_file_and_structure_data(
+        param_filename, separator)
+
+    if not column_names:
+        return month_dictionary
+
+    if not file_data_cleaned:
+        return month_dictionary
+
+    for column in column_names:
+        month_dictionary[column] = []
+
+    # Appending clean data in month dictionary
+    for i in range(1, len(file_data_cleaned)):
+        for j in range(0, len(file_data_cleaned[i])):
+            month_dictionary[file_data_cleaned[0][j]].append(
+                file_data_cleaned[i][j])
+    return month_dictionary
 
 
 def load_month_data(weather_data, path, month: int, year: int):
-    """
-    Loads passed month data into weather data class
+    """Loads passed month data into weather data class
 
-    load_month_data(weather_data, path, month, year)
-    weather_data: object of class WeatherData
-    path: path of the dir where all files are located
-    month: int representing month. range(1-12)
-    year: int representing year
+    Arguments:
+        weather_data: WeatherData:
+            object of class WeatherData
+        path: str:
+            path of the dir where all files are located
+        month: int:
+            Represents month. range(1-12)
+        year: int:
+            Represents year
     """
+
     if not (0 < month < 13):
         print("Invalid month")
         sys.exit()
@@ -59,13 +150,15 @@ def load_month_data(weather_data, path, month: int, year: int):
 
 
 def load_year_data(weather_data, path, year: int):
-    """
-        Loads passed year data into weather data class
+    """Loads passed year data into weather data class
 
-        load_year_data(weather_data, path, year)
-        weather_data: object of class WeatherData
-        path: path of the dir where all files are located
-        year: int representing year
+    Arguments:
+        weather_data: WeatherData:
+            object of class WeatherData
+        path: str:
+            path of the dir where all files are located
+        year: int:
+            Represents year
     """
 
     for i in range(1, 13):

@@ -98,29 +98,10 @@ This environment will be loaded automatically after successful creation, if it i
 
 _workon env-name_
 
-### Useful virtual environment commands
-<ul>
-<li>To create an environment
+### Installing requirements
+Run the following command in the environment to install the requirements
 
-_mkvirtualenv env-name_
-</li>
-<li>
-To change working environment
-
-_workon env-name_
-</li>
-<li> Remove a virtual environment
-
-_rmvirtualenv env-name_
-</li>
-<li> Deactivate the environment (Go back to use system python)
-
-_deactivate_
-
-</li>
-
-
-</ul>
+_pip install -r requirements.txt_
 
 # Usage
 <ul>
@@ -128,7 +109,7 @@ _deactivate_
 ### <li>For yearly report, execute
 python3 weatherman.py path/to/all/files -e year
 #### Example
-python3 weatherman.py weatherfiles/ -e 2014
+python3 weatherman.py weatherfiles/ -e 2015
 
 ![Yearly report output](images/yearly_report.png "Yearly report output")</li>
 
@@ -136,7 +117,7 @@ python3 weatherman.py weatherfiles/ -e 2014
 ### <li>For monthly report, execute
 python3 weatherman.py path/to/all/files -a year/month
 #### Example
-python3 weatherman.py weatherfiles/ -a 2014/06
+python3 weatherman.py weatherfiles/ -a 2015/02
 
 ![Monthly report output](images/monthly_report.png "Monthly report output")</li>
 
@@ -144,7 +125,7 @@ python3 weatherman.py weatherfiles/ -a 2014/06
 ### <li>For monthly graph (two lines), execute
 python3 weatherman.py path/to/all/files -c year/month
 #### Example
-python3 weatherman.py weatherfiles/ -c 2014/06
+python3 weatherman.py weatherfiles/ -c 2015/02
 
 ![Monthly graph (Single line) output](images/monthly_graph.png "Monthly graph (single line) output")</li>
 
@@ -152,7 +133,7 @@ python3 weatherman.py weatherfiles/ -c 2014/06
 ### <li>For monthly graph (single line), execute
 python3 weatherman.py path/to/all/files -b year/month
 #### Example
-python3 weatherman.py weatherfiles/ -b 2014/06
+python3 weatherman.py weatherfiles/ -b 2015/02
 
 ![Monthly graph (Two lines) output](images/monthly_graph_bonus.png "Monthly graph (two lines) output")</li>
 
