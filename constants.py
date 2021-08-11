@@ -22,3 +22,19 @@ BACKGROUND_COLOR_BLUE = 44
 BACKGROUND_COLOR_PURPLE = 45
 BACKGROUND_COLOR_CYAN = 46
 BACKGROUND_COLOR_WHITE = 47
+
+
+month_number_string_mapping = {
+    1: "Jan",
+    2: "Feb",
+    3: "Mar",
+    4: "Apr",
+    5: "May",
+    6: "Jun",
+    7: "Jul",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec"
+}

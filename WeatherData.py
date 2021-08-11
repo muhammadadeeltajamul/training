@@ -11,6 +11,23 @@ class WeatherData:
                 max_humidity
                 min_humidity
                 mean_humidity
+
+    Data Structure:
+        It contains a single dict whose all values are also dict
+        complete_data (data)
+            year 1 (dict)
+                month 1 (dict)
+                    Weather Attribute 1 (dict)
+                        weather_attribute_of_month (list)
+                    Weather Attribute 2 (dict)
+                    ...
+                month 2 (dict)
+                ...
+            year 2 (dict)
+            ...
+        To get an attribute for a month, we would use
+                complete_data[year][month][weather_attribute]
+            It will return a list
     """
 
     def __init__(self):
@@ -62,14 +79,14 @@ class WeatherData:
         """
 
         string = string.lower()
-        mapping_dictionary = {
+        alias_name_mapping_dictionary = {
             "max_temperature": self.__max_temp_c,
             "min_temperature": self.__min_temp_c,
             "max_humidity": self.__max_humidity,
             "min_humidity": self.__min_humidity,
             "mean_humidity": self.__mean_humidity
         }
-        return mapping_dictionary.get(string, None)
+        return alias_name_mapping_dictionary.get(string, None)
 
     def get_column_data(self, column_name, month: int, year: int):
         """Returns column data from column name, month and year

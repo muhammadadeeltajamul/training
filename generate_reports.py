@@ -28,71 +28,25 @@ def change_text_color(text, style=0, color=37, background_color=40):
         style = int(style)
         color = int(color)
         background_color = int(background_color)
-    except Exception:
+    except ValueError:
         return ""
     color_string = "\033[" + str(style) + ";" + str(color) + ";"\
                    + str(background_color) + "m" + str(text)
     return color_string
 
 
-def arg_max(list_):
-    """Returns the index of maximum element of list
-
-    Arguments:
-        list_:
-            list whose maximum index is required
-
-    Returns:
-        index: int:
-            The index whose value is maximum
-    """
-
-    if not list_:
-        return None
-    max_index = 0
-    max_value = list_[max_index]
-    for i in range(0, len(list_)):
-        if list_[i] > max_value:
-            max_value = list_[i]
-            max_index = i
-    return max_index
-
-
-def arg_min(list_):
-    """Returns the index of minimum element of list
-
-    Arguments:
-        list_:
-            list whose minimum index is required
-
-    Returns:
-        index: int:
-            The index whose value is minimum
-    """
-
-    if not list_:
-        return None
-    min_index = 0
-    min_value = list_[min_index]
-    for i in range(0, len(list_)):
-        if list_[i] < min_value:
-            min_value = list_[i]
-            min_index = i
-    return min_index
-
-
-def get_boundary_element(list_, max_=True, index=0):
+def get_boundary_element(year_data_list, get_maximum=True, key_index=0):
     """Returns the maximum or minimum element of a 2D-array.
 
     Arguments:
-        list_: list:
-            Input list whose boundary element is required
-        max_: Bool:
+        year_data_list: list:
+            Input 2D list whose boundary element is required.
+        get_maximum: Bool:
             Maximum or minimum value.
             True for maximum and False for minimum
             default: True
-        index: int:
-            Key of 2nd dimension of array
+        key_index: int:
+            Key of 2nd dimension of array for sorting
             default: 0
 
     Returns:
@@ -100,10 +54,11 @@ def get_boundary_element(list_, max_=True, index=0):
             boundary value
     """
 
-    list_ = sorted(list_, reverse=max_, key=lambda x: x[index])
-    temperature = list_[0][0]
-    month = get_month_string_from_number(list_[0][2])
-    year = list_[0][1]
+    year_data_list = sorted(year_data_list, reverse=get_maximum,
+                            key=lambda x: x[key_index])
+    temperature = year_data_list[0][0]
+    month = get_month_string_from_number(year_data_list[0][2])
+    year = year_data_list[0][1]
     return temperature, month, year
 
 
@@ -183,56 +138,68 @@ def compute_yearly_weather_report(weather_data: WeatherData,
                                                      "max_temperature",
                                                      month, year)
         if max_temp_column:
-            max_index = arg_max(max_temp_column)
-            max_temp_list.append([max_temp_column[max_index],
-                                  max_index + 1, month])
+            max_temperature_index = max_temp_column.index(max(
+                max_temp_column))
+            max_temp_of_month = max_temp_column[max_temperature_index]
+            day = max_temperature_index + 1
+            max_temp_list.append([max_temp_of_month, day, month])
 
         # Min temperature
         min_temp_column = get_column_data_from_alias(weather_data,
                                                      "min_temperature",
                                                      month, year)
         if min_temp_column:
-            min_index = arg_min(min_temp_column)
-            min_temp_list.append([min_temp_column[min_index],
-                                  min_index + 1, month])
+            min_temperature_index = min_temp_column.index(min(
+                min_temp_column))
+            min_temp_of_month = min_temp_column[min_temperature_index]
+            day = min_temperature_index + 1
+            min_temp_list.append([min_temp_of_month, day, month])
 
         # Max humidity
         max_humidity_column = get_column_data_from_alias(weather_data,
                                                          "max_humidity",
                                                          month, year)
         if max_humidity_column:
-            max_index = arg_max(max_humidity_column)
-            max_humidity_list.append([max_humidity_column[max_index],
-                                      max_index + 1, month])
+            max_humidity_index = max_humidity_column.index(max(
+                max_humidity_column))
+            max_humidity_of_month = max_humidity_column[
+                max_humidity_index]
+            day = max_humidity_index + 1
+            max_humidity_list.append([max_humidity_of_month, day,
+                                      month])
 
         # Min humidity
         min_humidity_column = get_column_data_from_alias(weather_data,
                                                          "min_humidity",
                                                          month, year)
         if min_humidity_column:
-            min_index = arg_min(min_humidity_column)
-            min_humidity_list.append([min_humidity_column[min_index],
-                                      min_index + 1, month])
+            min_humidity_index = min_humidity_column.index(min(
+                min_humidity_column))
+            min_humidity_of_month = min_humidity_column[
+                min_humidity_index]
+            day = min_humidity_index + 1
+            min_humidity_list.append([min_humidity_of_month, day,
+                                      month])
 
     # Checking largest/smallest in each of the lists
     if len(max_temp_list) > 1:
         temperature, month, year = get_boundary_element(max_temp_list,
-                                                        max_=True)
+                                                        get_maximum=True)
         print("Maximum Temperature:", temperature, "C on", month, year)
 
     if len(min_temp_list) > 1:
         temperature, month, year = get_boundary_element(min_temp_list,
-                                                        max_=False)
+                                                        get_maximum=False)
         print("Minimum Temperature:", temperature, "C on", month, year)
 
     if len(max_humidity_list) > 1:
         humidity, month, year = get_boundary_element(max_humidity_list,
-                                                     max_=True)
+                                                     get_maximum=True)
         print("Maximum Humidity:", humidity, "% on", month, year)
 
     if len(min_humidity_list) > 1:
         humidity, month, year = get_boundary_element(min_humidity_list,
-                                                     max_=False)
+                                                     get_maximum=False)
         print("Minimum Humidity:", humidity, "% on", month, year)
     return
 

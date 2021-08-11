@@ -63,7 +63,7 @@ def clean_file_and_structure_data(param_filename, separator):
                         try:
                             line_data[list_index] = float(
                                 line_data[list_index])
-                        except Exception:
+                        except ValueError:
                             print("Invalid data in ", param_filename)
                             sys.exit()
 
