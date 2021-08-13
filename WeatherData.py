@@ -36,9 +36,8 @@ class WeatherData:
         self.__max_temp_c = "Max TemperatureC"
         self.__min_temp_c = "Min TemperatureC"
         self.__max_humidity = "Max Humidity"
-        self.__min_humidity = " Min Humidity"
-        self.__mean_humidity = " Mean Humidity"
-        return
+        self.__min_humidity = "Min Humidity"
+        self.__mean_humidity = "Mean Humidity"
 
     def add_month_data(self, month: int, year: int, month_data):
         """Stores month weather information in data structure

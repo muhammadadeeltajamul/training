@@ -131,8 +131,7 @@ def compute_yearly_weather_report(weather_data: WeatherData,
     load_year_data(weather_data, path, year)
 
     # Checking data of all 12 months
-    for i in range(0, 12):
-        month = i + 1
+    for month in range(1, 13):
         # Max temperature
         max_temp_column = get_column_data_from_alias(weather_data,
                                                      "max_temperature",

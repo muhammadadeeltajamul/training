@@ -24,7 +24,7 @@ BACKGROUND_COLOR_CYAN = 46
 BACKGROUND_COLOR_WHITE = 47
 
 
-month_number_string_mapping = {
+MONTH_NUMBER_STRING_MAPPING = {
     1: "Jan",
     2: "Feb",
     3: "Mar",

@@ -49,7 +49,7 @@ def clean_file_and_structure_data(param_filename, separator):
                 # Creating indexes in dictionary for each column
                 # It will be used in the end
                 for each in line_data:
-                    column_names.append(each)
+                    column_names.append(str(each).strip())
             else:
                 # Changing data from string to integer/float
                 # Starting loop from 1 to skip the date column
@@ -115,7 +115,7 @@ def load_data_from_file(param_filename):
     # Appending clean data in month dictionary
     for i in range(1, len(file_data_cleaned)):
         for j in range(0, len(file_data_cleaned[i])):
-            month_dictionary[file_data_cleaned[0][j]].append(
+            month_dictionary[column_names[j]].append(
                 file_data_cleaned[i][j])
     return month_dictionary
 

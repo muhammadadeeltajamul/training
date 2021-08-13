@@ -1,4 +1,4 @@
-from constants import month_number_string_mapping
+from constants import MONTH_NUMBER_STRING_MAPPING
 
 
 def get_month_year_from_string(month_year_string):
@@ -38,8 +38,8 @@ def get_month_number_from_string(month_string):
     """
 
     month_string = str(month_string).lower()
-    month_key_list = list(month_number_string_mapping.keys())
-    month_values_list = list(month_number_string_mapping.values())
+    month_key_list = list(MONTH_NUMBER_STRING_MAPPING.keys())
+    month_values_list = list(MONTH_NUMBER_STRING_MAPPING.values())
     month_values_list = [value.lower() for value in month_values_list]
 
     try:
@@ -60,7 +60,7 @@ def get_month_string_from_number(month_number: int):
             String of length 3 that represents month
     """
 
-    return month_number_string_mapping.get(month_number, "")
+    return MONTH_NUMBER_STRING_MAPPING.get(month_number, "")
 
 
 def get_column_data_from_alias(weather_data, alias, month, year):
